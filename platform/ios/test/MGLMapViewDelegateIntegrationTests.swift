@@ -93,5 +93,5 @@ extension MGLMapViewDelegateIntegrationTests: MGLMapViewDelegate {
 
     func mapView(_ mapView: MGLMapView, shouldChangeFrom oldCamera: MGLMapCamera, to newCamera: MGLMapCamera, reason: MGLCameraChangeReason) -> Bool { return false }
     
-    func userLocationAnchor(for mapView: MGLMapView) -> CGPoint { CGPoint(x: 100, y: 100) }
+    func mapViewUserLocationAnchorPoint(_ mapView: MGLMapView) -> CGPoint { return CGPoint(x: 100, y: 100) }
 }
