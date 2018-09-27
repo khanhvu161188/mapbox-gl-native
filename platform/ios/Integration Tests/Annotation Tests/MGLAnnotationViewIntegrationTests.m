@@ -1,6 +1,7 @@
 #import "MGLMapViewIntegrationTest.h"
 #import "MGLTestUtility.h"
 #import "MGLMapAccessibilityElement.h"
+#import "MGLTestLocationManager.h"
 
 @interface MGLMapView (Tests)
 - (MGLAnnotationTag)annotationTagAtPoint:(CGPoint)point persistingResults:(BOOL)persist;
@@ -92,6 +93,14 @@
 }
 
 - (void)testUserLocationAnnotationAnchorPoint {
+    [self.mapView setCenterCoordinate:CLLocationCoordinate2DMake(37.787357, -122.39899)];
+    MGLTestLocationManager *locationManager = [[MGLTestLocationManager alloc] init];
+    self.mapView.locationManager = locationManager;
+    
+    [self.mapView setUserTrackingMode:MGLUserTrackingModeFollow animated:NO];
+    
+    MGLUserLocationAnnotationView *userLocationAnnotationView = [self.mapView viewForAnnotation:self.mapView.userLocation];
+
     self.mapViewUserLocationAnchorPoint = ^CGPoint (MGLMapView *mapView) {
         return CGPointMake(100, 100);
     };
