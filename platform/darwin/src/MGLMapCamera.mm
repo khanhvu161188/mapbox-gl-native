@@ -1,7 +1,10 @@
 #import "MGLMapCamera.h"
 #import "MGLGeometry_Private.h"
 
+#import <CoreLocation/CoreLocation.h>
+
 #include <mbgl/util/projection.hpp>
+#include <mbgl/math/wrap.hpp>
 
 BOOL MGLEqualFloatWithAccuracy(CGFloat left, CGFloat right, CGFloat accuracy)
 {
@@ -32,12 +35,17 @@ BOOL MGLEqualFloatWithAccuracy(CGFloat left, CGFloat right, CGFloat accuracy)
         
         mbgl::ProjectedMeters centerMeters = mbgl::Projection::projectedMetersForLatLng(centerLatLng);
         mbgl::ProjectedMeters eyeMeters = mbgl::Projection::projectedMetersForLatLng(eyeLatLng);
-        heading = std::atan((centerMeters.northing() - eyeMeters.northing()) /
-                            (centerMeters.easting() - eyeMeters.easting()));
+        CGFloat radianHeading = atan2(centerMeters.easting() - eyeMeters.easting(),
+                                      centerMeters.northing() - eyeMeters.northing());
+        heading = mbgl::util::wrap(MGLDegreesFromRadians(radianHeading), 0.0, 360.0);
         
-        double groundDistance = std::hypot(centerMeters.northing() - eyeMeters.northing(),
-                                           centerMeters.easting() - eyeMeters.easting());
-        pitch = std::atan(eyeAltitude / groundDistance);
+        CLLocation *centerLocation = [[CLLocation alloc] initWithLatitude:centerCoordinate.latitude
+                                                                longitude:centerCoordinate.longitude];
+        CLLocation *eyeLocation = [[CLLocation alloc] initWithLatitude:eyeCoordinate.latitude
+                                                             longitude:eyeCoordinate.longitude];
+        CLLocationDistance groundDistance = [eyeLocation distanceFromLocation:centerLocation];
+        CGFloat radianPitch = atan2(eyeAltitude, groundDistance);
+        pitch = mbgl::util::wrap(90 - MGLDegreesFromRadians(radianPitch), 0.0, 360.0);
     }
 
     return [[self alloc] initWithCenterCoordinate:centerCoordinate
