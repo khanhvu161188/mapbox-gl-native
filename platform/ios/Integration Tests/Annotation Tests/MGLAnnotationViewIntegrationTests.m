@@ -91,6 +91,12 @@
     }
 }
 
+- (void)testUserLocationAnnotationAnchorPoint {
+    self.mapViewUserLocationAnchorPoint = ^CGPoint (MGLMapView *mapView) {
+        return CGPointMake(100, 100);
+    };
+}
+
 - (void)waitForCollisionDetectionToRun {
     XCTAssertNil(self.renderFinishedExpectation, @"Incorrect test setup");
 
