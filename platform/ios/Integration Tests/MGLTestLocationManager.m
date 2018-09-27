@@ -1,6 +1,6 @@
 #import "MGLTestLocationManager.h"
 
-// Used to supply integration tests with a simulated location manager
+// Used to supply integration tests with a simulated location manager.
 // Methods that are empty are not used within integration tests and are
 // therefore unimplemented.
 
